@@ -6,9 +6,9 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-app.get("", (req, res) => {
-  res.send("welcome to server API")
-})
+const klasemenRoute = require("./routes/klasemen.routes")
+
+app.use("/klub", klasemenRoute)
 
 app.listen(PORT, (err) => {
   db.sequelize.sync({ alter: true })
