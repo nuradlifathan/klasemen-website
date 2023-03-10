@@ -1,17 +1,17 @@
 "use strict"
 const { Model } = require("sequelize")
 module.exports = (sequelize, DataTypes) => {
-  class Scores extends Model {
+  class Skor extends Model {
     static associate(models) {
-      Scores.belongsTo(models.Clubs, {
+      Skor.belongsTo(models.Klub, {
         foreignKey: "id_klub1",
       }),
-        Scores.belongsTo(models.Clubs, {
+        Skor.belongsTo(models.Klub, {
           foreignKey: "id_klub2",
         })
     }
   }
-  Scores.init(
+  Skor.init(
     {
       skor_klub1: {
         type: DataTypes.INTEGER,
@@ -24,9 +24,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "Scores",
+      modelName: "Skor",
       timestamps: false,
     }
   )
-  return Scores
+  return Skor
 }
