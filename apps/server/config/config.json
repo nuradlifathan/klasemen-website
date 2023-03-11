@@ -2,7 +2,7 @@
   "development": {
     "username": "root",
     "password": "password",
-    "database": "klasemen-web",
+    "database": "klasemen-website",
     "host": "127.0.0.1",
     "dialect": "mysql",
     "logging": false
