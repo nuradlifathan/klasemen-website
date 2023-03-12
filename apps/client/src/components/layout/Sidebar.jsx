@@ -10,7 +10,6 @@ import {
 import { FiMenu, FiHome, FiLayout, FiPlus } from "react-icons/fi"
 import NavItem from "../layout/NavItem"
 import { Link } from "react-router-dom"
-// import Routes from "../../Routes"
 
 export default function Sidebar() {
   const [navSize, changeNavSize] = useState("large")
@@ -49,8 +48,12 @@ export default function Sidebar() {
         <Link to="/create-club">
           <NavItem navSize={navSize} icon={FiHome} title="Create Club" />
         </Link>
-        <NavItem navSize={navSize} icon={FiPlus} title="Input Match" />
-        <NavItem navSize={navSize} icon={FiLayout} title="View Klasemen" />
+        <Link to="/input-match">
+          <NavItem navSize={navSize} icon={FiPlus} title="Input Match" />
+        </Link>
+        <Link to="/view-klasemen">
+          <NavItem navSize={navSize} icon={FiLayout} title="View Klasemen" />
+        </Link>
       </Flex>
 
       <Flex
