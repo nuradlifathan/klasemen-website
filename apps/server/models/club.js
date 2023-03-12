@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Club.init(
     {
-      name: {
+      team: {
         type: DataTypes.STRING,
         allowNull: false,
       },

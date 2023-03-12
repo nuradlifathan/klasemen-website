@@ -1,10 +1,10 @@
-const { Klub, Club, Match } = require("../models")
+const { Club, Match } = require("../models")
 module.exports = {
   createClubs: async (req, res) => {
     try {
-      const { name } = req.body
+      const { team } = req.body
       const club = await Club.create({
-        name,
+        team,
         main: 0,
         menang: 0,
         seri: 0,
@@ -31,7 +31,7 @@ module.exports = {
       const [homeScore, awayScore] = score.split("-").map(Number)
 
       // Find the opponent club
-      const opponent = await Club.findOne({ where: { name: opponent_name } })
+      const opponent = await Club.findOne({ where: { team: opponent_name } })
       if (!opponent) {
         res.status(404).json({ message: "Opponent not found" })
         return
@@ -85,13 +85,13 @@ module.exports = {
         order: [
           ["point", "DESC"],
           ["goal_masuk", "DESC"],
-          ["name", "ASC"],
+          ["team", "ASC"],
         ],
       })
       res.json(
         klasemen.map((club, index) => ({
           no: index + 1,
-          klub: club.name,
+          klub: club.team,
           main: club.main,
           menang: club.menang,
           seri: club.seri,
