@@ -14,7 +14,6 @@ import { useFormik } from "formik"
 import { API } from "../api"
 import * as Yup from "yup"
 import { useState } from "react"
-import { FaSpinner } from "react-icons/fa"
 
 const CreateClub = () => {
   const toast = useToast()
@@ -92,14 +91,6 @@ const CreateClub = () => {
             type="submit"
             isLoading={isLoading}
           >
-            {/* {isLoading ? (
-              <>
-                <FaSpinner className="spinner" />
-                Creating...
-              </>
-            ) : (
-              "Create"
-            )} */}
             Create
           </Button>
         </Stack>
