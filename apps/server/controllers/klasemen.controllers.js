@@ -105,4 +105,14 @@ module.exports = {
       console.error(err)
     }
   },
+  getAllClub: async (req, res) => {
+    try {
+      const getClub = await Club.findAll({
+        attributes: ["id", "team"],
+      })
+      res.json(getClub)
+    } catch (err) {
+      console.error(err)
+    }
+  },
 }
