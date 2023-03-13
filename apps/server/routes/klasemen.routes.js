@@ -8,5 +8,7 @@ router.post("/create", klasemenControllers.createClubs)
 router.post("/input-score", klasemenControllers.inputScore)
 // View Klasemen
 router.get("/klasemen", klasemenControllers.viewKlasemen)
+// Get All Club
+router.get("/", klasemenControllers.getAllClub)
 
 module.exports = router
