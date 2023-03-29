@@ -1,5 +1,5 @@
 ## Summary
-This Project is to complete APTAVIS Coding Test purposes .
+This Project is for portfolio and self taught learnng purposes.
 
 ## What's Next
  - User Authorization & Authentication
