@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom"
 
 import CreateClub from "./components/CreateClub"
-import InputScoreForm from "./components/InputScore"
+import InputScoreForm from "./components/InputScore2"
 import ViewKlasemen from "./components/ViewKlasemen"
 import Homepage from "./pages/Homepage"
 

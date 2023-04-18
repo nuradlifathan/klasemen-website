@@ -20,6 +20,7 @@ module.exports = {
   },
   inputScore: async (req, res) => {
     try {
+      console.log(req.body)
       const { ClubId, opponent_name, score } = req.body
 
       const club = await Club.findByPk(ClubId)
