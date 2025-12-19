@@ -25,7 +25,10 @@
     "yup": "^1.0.2"
   },
   "devDependencies": {
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^4.2.1",
+    "typescript": "^5.9.3",
     "vite": "^5.4.11"
   }
 }
