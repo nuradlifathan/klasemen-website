@@ -1,14 +1,15 @@
-const express = require("express")
-const klasemenControllers = require("../controllers/klasemen.controllers")
-const router = express.Router()
+import { Hono } from 'hono'
+import * as klasemenControllers from '../controllers/klasemen.controllers'
+
+const router = new Hono()
 
 // Create Club
-router.post("/create", klasemenControllers.createClubs)
+router.post('/create', klasemenControllers.createClubs)
 // Input Score
-router.post("/input-score", klasemenControllers.inputScore)
+router.post('/input-score', klasemenControllers.inputScore)
 // View Klasemen
-router.get("/klasemen", klasemenControllers.viewKlasemen)
+router.get('/klasemen', klasemenControllers.viewKlasemen)
 // Get All Club
-router.get("/", klasemenControllers.getAllClub)
+router.get('/', klasemenControllers.getAllClub)
 
-module.exports = router
+export default router

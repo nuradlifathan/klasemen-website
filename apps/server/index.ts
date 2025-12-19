@@ -1,20 +1,24 @@
-const express = require("express")
-const cors = require("cors")
-const db = require("./models")
+import { Hono } from 'hono'
+import { cors } from 'hono/cors'
+import { serve } from '@hono/node-server'
+import klasemenRoutes from './routes/klasemen.routes'
+
+const db = require('./models')
+
+const app = new Hono()
+
+app.use('*', cors())
+app.route('/klub', klasemenRoutes)
+
 const PORT = 8000
-const app = express()
-app.use(cors())
-app.use(express.json())
 
-const klasemenRoute = require("./routes/klasemen.routes")
-
-app.use("/klub", klasemenRoute)
-
-app.listen(PORT, (err) => {
-  db.sequelize.sync({ alter: true })
-  if (err) {
-    console.log(`Error : ${err.message}`)
-  } else {
+db.sequelize.sync({ alter: true }).then(() => {
+  serve({
+    fetch: app.fetch,
+    port: PORT
+  }, () => {
     console.log(`Listening to PORT ${PORT}`)
-  }
+  })
 })
+
+export default app
