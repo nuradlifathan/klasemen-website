@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import {
   Flex,
   Text,
@@ -6,13 +6,18 @@ import {
   Divider,
   Avatar,
   Heading,
+  useColorMode,
+  useColorModeValue,
 } from "@chakra-ui/react"
-import { FiMenu, FiHome, FiLayout, FiPlus } from "react-icons/fi"
+import { FiMenu, FiHome, FiLayout, FiPlus, FiMoon, FiSun } from "react-icons/fi"
 import NavItem from "../layout/NavItem"
 import { Link } from "react-router-dom"
 
 export default function Sidebar() {
   const [navSize, changeNavSize] = useState("large")
+  const { colorMode, toggleColorMode } = useColorMode()
+  const bgColor = useColorModeValue("white", "gray.800")
+
   return (
     <Flex
       pos="sticky"
@@ -24,6 +29,7 @@ export default function Sidebar() {
       w={navSize == "small" ? "75px" : "200px"}
       flexDir="column"
       justifyContent="space-between"
+      bg={bgColor}
     >
       <Flex
         p="5%"
@@ -32,16 +38,27 @@ export default function Sidebar() {
         alignItems={navSize == "small" ? "center" : "flex-start"}
         as="nav"
       >
-        <IconButton
-          background="none"
-          mt={5}
-          _hover={{ background: "none" }}
-          icon={<FiMenu />}
-          onClick={() => {
-            if (navSize == "small") changeNavSize("large")
-            else changeNavSize("small")
-          }}
-        />
+        <Flex justify="space-between" w="100%" align="center">
+          <IconButton
+            aria-label="Toggle menu"
+            background="none"
+            mt={5}
+            _hover={{ background: "none" }}
+            icon={<FiMenu />}
+            onClick={() => {
+              if (navSize == "small") changeNavSize("large")
+              else changeNavSize("small")
+            }}
+          />
+          <IconButton
+            aria-label="Toggle dark mode"
+            background="none"
+            mt={5}
+            _hover={{ background: "none" }}
+            icon={colorMode === "light" ? <FiMoon /> : <FiSun />}
+            onClick={toggleColorMode}
+          />
+        </Flex>
         <Link to="/">
           <NavItem navSize={navSize} icon={FiHome} title="Dashboard" />
         </Link>
