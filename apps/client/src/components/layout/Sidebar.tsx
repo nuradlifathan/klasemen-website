@@ -54,6 +54,9 @@ export default function Sidebar() {
         <Link to="/view-klasemen">
           <NavItem navSize={navSize} icon={FiLayout} title="View Klasemen" />
         </Link>
+        <Link to="/real-klasemen">
+          <NavItem navSize={navSize} icon={FiLayout} title="Live Standings" />
+        </Link>
       </Flex>
 
       <Flex
