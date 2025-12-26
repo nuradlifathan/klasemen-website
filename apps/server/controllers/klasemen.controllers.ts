@@ -1,18 +1,22 @@
 import { Context } from 'hono'
-const { Club, Match } = require('../models')
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 export const createClubs = async (c: Context) => {
   try {
     const { team } = await c.req.json()
-    const club = await Club.create({
-      team,
-      main: 0,
-      menang: 0,
-      seri: 0,
-      kalah: 0,
-      goal_masuk: 0,
-      goal_kemasukan: 0,
-      point: 0,
+    const club = await prisma.club.create({
+      data: {
+        team,
+        main: 0,
+        menang: 0,
+        seri: 0,
+        kalah: 0,
+        goal_masuk: 0,
+        goal_kemasukan: 0,
+        point: 0,
+      }
     })
     return c.json(club)
   } catch (err) {
@@ -26,7 +30,7 @@ export const inputScore = async (c: Context) => {
     const { ClubId, opponent_name, score } = await c.req.json()
     console.log({ ClubId, opponent_name, score })
 
-    const club = await Club.findByPk(ClubId)
+    const club = await prisma.club.findUnique({ where: { id: ClubId } })
     if (!club) {
       return c.json({ message: 'Club not found' }, 404)
     }
@@ -34,48 +38,48 @@ export const inputScore = async (c: Context) => {
     const [homeScore, awayScore] = score.split('-').map(Number)
 
     // Find the opponent club
-    const opponent = await Club.findOne({ where: { team: opponent_name } })
+    const opponent = await prisma.club.findFirst({ where: { team: opponent_name } })
     if (!opponent) {
       return c.json({ message: 'Opponent not found' }, 404)
     }
 
-    await Match.create({
-      ClubId,
-      opponent_name,
-      score,
+    await prisma.match.create({
+      data: {
+        clubId: ClubId,
+        opponent_name,
+        score,
+      }
     })
 
     // Update home team statistics
-    club.main += 1
-    club.goal_masuk += homeScore
-    club.goal_kemasukan += awayScore
-    if (homeScore > awayScore) {
-      club.menang += 1
-      club.point += 3
-    } else if (homeScore === awayScore) {
-      club.seri += 1
-      club.point += 1
-    } else {
-      club.kalah += 1
-    }
-    await club.save()
+    const updatedClub = await prisma.club.update({
+      where: { id: ClubId },
+      data: {
+        main: club.main + 1,
+        goal_masuk: club.goal_masuk + homeScore,
+        goal_kemasukan: club.goal_kemasukan + awayScore,
+        menang: homeScore > awayScore ? club.menang + 1 : club.menang,
+        seri: homeScore === awayScore ? club.seri + 1 : club.seri,
+        kalah: homeScore < awayScore ? club.kalah + 1 : club.kalah,
+        point: homeScore > awayScore ? club.point + 3 : (homeScore === awayScore ? club.point + 1 : club.point),
+      }
+    })
 
     // Update opponent team statistics
-    opponent.main += 1
-    opponent.goal_masuk += awayScore
-    opponent.goal_kemasukan += homeScore
-    if (homeScore < awayScore) {
-      opponent.menang += 1
-      opponent.point += 3
-    } else if (homeScore === awayScore) {
-      opponent.seri += 1
-      opponent.point += 1
-    } else {
-      opponent.kalah += 1
-    }
-    await opponent.save()
+    const updatedOpponent = await prisma.club.update({
+      where: { id: opponent.id },
+      data: {
+        main: opponent.main + 1,
+        goal_masuk: opponent.goal_masuk + awayScore,
+        goal_kemasukan: opponent.goal_kemasukan + homeScore,
+        menang: homeScore < awayScore ? opponent.menang + 1 : opponent.menang,
+        seri: homeScore === awayScore ? opponent.seri + 1 : opponent.seri,
+        kalah: homeScore > awayScore ? opponent.kalah + 1 : opponent.kalah,
+        point: homeScore < awayScore ? opponent.point + 3 : (homeScore === awayScore ? opponent.point + 1 : opponent.point),
+      }
+    })
 
-    return c.json({ club, opponent })
+    return c.json({ club: updatedClub, opponent: updatedOpponent })
   } catch (error) {
     console.error(error)
     return c.json({ error: 'Error inputting score' }, 500)
@@ -84,15 +88,15 @@ export const inputScore = async (c: Context) => {
 
 export const viewKlasemen = async (c: Context) => {
   try {
-    const klasemen = await Club.findAll({
-      order: [
-        ['point', 'DESC'],
-        ['goal_masuk', 'DESC'],
-        ['team', 'ASC'],
+    const klasemen = await prisma.club.findMany({
+      orderBy: [
+        { point: 'desc' },
+        { goal_masuk: 'desc' },
+        { team: 'asc' },
       ],
     })
     return c.json(
-      klasemen.map((club: any, index: number) => ({
+      klasemen.map((club, index) => ({
         no: index + 1,
         klub: club.team,
         main: club.main,
@@ -112,10 +116,10 @@ export const viewKlasemen = async (c: Context) => {
 
 export const getAllClub = async (c: Context) => {
   try {
-    const getClub = await Club.findAll({
-      attributes: ['id', 'team'],
+    const clubs = await prisma.club.findMany({
+      select: { id: true, team: true },
     })
-    return c.json(getClub)
+    return c.json(clubs)
   } catch (err) {
     console.error(err)
     return c.json({ error: 'Failed to get clubs' }, 500)

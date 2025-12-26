@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Club {
+  id             Int     @id @default(autoincrement())
+  team           String
+  main           Int     @default(0)
+  menang         Int     @default(0)
+  seri           Int     @default(0)
+  kalah          Int     @default(0)
+  goal_masuk     Int     @default(0)
+  goal_kemasukan Int     @default(0)
+  point          Int     @default(0)
+  matches        Match[]
+}
+
+model Match {
+  id            Int    @id @default(autoincrement())
+  opponent_name String
+  score         String
+  club          Club   @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  clubId        Int
+}
