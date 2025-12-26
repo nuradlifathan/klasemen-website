@@ -10,48 +10,49 @@ import {
   useColorModeValue,
   useToast,
 } from "@chakra-ui/react"
-import { useFormik } from "formik"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
 import { API } from "../api"
-import * as Yup from "yup"
 import { useState } from "react"
+
+const createClubSchema = z.object({
+  team: z.string().min(1, "Club Name still empty"),
+})
+
+type CreateClubForm = z.infer<typeof createClubSchema>
 
 const CreateClub = () => {
   const toast = useToast()
   const [isLoading, setIsLoading] = useState(false)
 
-  const create = useFormik({
-    initialValues: {
-      team: "",
-    },
-    onSubmit: async ({ team }, { resetForm }) => {
-      setIsLoading(true)
-
-      try {
-        await API.post("/klub/create", { team })
-
-        toast({
-          title: "Successfully Create Club",
-          status: "success",
-        })
-
-        resetForm()
-      } catch (err) {
-        toast({ title: "Network Error", status: "error" })
-        console.error(err)
-      } finally {
-        setIsLoading(false)
-      }
-    },
-    validationSchema: Yup.object({
-      team: Yup.string().required("Club Name still empty"),
-    }),
-    validateOnChange: false,
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<CreateClubForm>({
+    resolver: zodResolver(createClubSchema),
+    defaultValues: { team: "" },
   })
 
-  const formChange = ({ target }) => {
-    const { name, value } = target
-    create.setFieldValue(name, value)
+  const onSubmit = async (data: CreateClubForm) => {
+    setIsLoading(true)
+    try {
+      await API.post("/klub/create", { team: data.team })
+      toast({
+        title: "Successfully Create Club",
+        status: "success",
+      })
+      reset()
+    } catch (err) {
+      toast({ title: "Network Error", status: "error" })
+      console.error(err)
+    } finally {
+      setIsLoading(false)
+    }
   }
+
   return (
     <Flex minH={"100vh"} align={"center"} justify={"center"}>
       <Stack
@@ -67,35 +68,35 @@ const CreateClub = () => {
         <Heading lineHeight={1.1} fontSize={{ base: "2xl", md: "3xl" }}>
           Create Football Club
         </Heading>
-        <FormControl isInvalid={create.errors.team}>
-          <FormLabel>Name</FormLabel>
-          <Input
-            placeholder="type your dream club"
-            _placeholder={{ color: "gray.500" }}
-            onChange={formChange}
-            name="team"
-            type="text"
-            value={create.values.team}
-          />
-          <FormErrorMessage>{create.errors.team}</FormErrorMessage>
-        </FormControl>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <FormControl isInvalid={!!errors.team}>
+            <FormLabel>Name</FormLabel>
+            <Input
+              placeholder="type your dream club"
+              _placeholder={{ color: "gray.500" }}
+              {...register("team")}
+              type="text"
+            />
+            <FormErrorMessage>{errors.team?.message}</FormErrorMessage>
+          </FormControl>
 
-        <Stack spacing={6}>
-          <Button
-            bg="blue.400"
-            color="white"
-            _hover={{
-              bg: "blue.500",
-            }}
-            onClick={create.handleSubmit}
-            type="submit"
-            isLoading={isLoading}
-          >
-            Create
-          </Button>
-        </Stack>
+          <Stack spacing={6} mt={4}>
+            <Button
+              bg="blue.400"
+              color="white"
+              _hover={{
+                bg: "blue.500",
+              }}
+              type="submit"
+              isLoading={isLoading}
+            >
+              Create
+            </Button>
+          </Stack>
+        </form>
       </Stack>
     </Flex>
   )
 }
+
 export default CreateClub
