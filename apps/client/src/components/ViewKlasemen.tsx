@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react"
 import {
   Box,
   Heading,
@@ -10,21 +9,48 @@ import {
   Td,
   useBreakpointValue,
   TableContainer,
+  Spinner,
+  Center,
+  Text,
 } from "@chakra-ui/react"
-import { API } from "../api"
+import { useQuery } from "@tanstack/react-query"
+import { api } from "../api"
+
+interface KlasemenItem {
+  no: number
+  klub: string
+  main: number
+  menang: number
+  seri: number
+  kalah: number
+  goal_masuk: number
+  goal_kemasukan: number
+  point: number
+}
 
 const ViewKlasemen = () => {
-  const [klasemen, setKlasemen] = useState([])
-
-  useEffect(() => {
-    API.get("/klub/klasemen")
-      .then((res) => {
-        setKlasemen(res.data)
-      })
-      .catch((err) => console.error(err))
-  }, [])
+  const { data: klasemen, isLoading, error } = useQuery<KlasemenItem[]>({
+    queryKey: ["klasemen"],
+    queryFn: api.getKlasemen,
+  })
 
   const tableSize = useBreakpointValue({ base: "sm", md: "md", lg: "lg" })
+
+  if (isLoading) {
+    return (
+      <Center h="100vh">
+        <Spinner size="xl" />
+      </Center>
+    )
+  }
+
+  if (error) {
+    return (
+      <Center h="100vh">
+        <Text color="red.500">Failed to load klasemen</Text>
+      </Center>
+    )
+  }
 
   return (
     <Box m="2rem">
@@ -47,8 +73,8 @@ const ViewKlasemen = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {klasemen.map((club) => (
-              <Tr key={club.id}>
+            {klasemen?.map((club) => (
+              <Tr key={club.no}>
                 <Td>{club.no}</Td>
                 <Td>{club.klub}</Td>
                 <Td>{club.main}</Td>

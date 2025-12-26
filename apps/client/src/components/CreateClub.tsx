@@ -13,8 +13,8 @@ import {
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { API } from "../api"
-import { useState } from "react"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { api } from "../api"
 
 const createClubSchema = z.object({
   team: z.string().min(1, "Club Name still empty"),
@@ -24,7 +24,7 @@ type CreateClubForm = z.infer<typeof createClubSchema>
 
 const CreateClub = () => {
   const toast = useToast()
-  const [isLoading, setIsLoading] = useState(false)
+  const queryClient = useQueryClient()
 
   const {
     register,
@@ -36,21 +36,23 @@ const CreateClub = () => {
     defaultValues: { team: "" },
   })
 
-  const onSubmit = async (data: CreateClubForm) => {
-    setIsLoading(true)
-    try {
-      await API.post("/klub/create", { team: data.team })
+  const mutation = useMutation({
+    mutationFn: api.createClub,
+    onSuccess: () => {
       toast({
         title: "Successfully Create Club",
         status: "success",
       })
       reset()
-    } catch (err) {
+      queryClient.invalidateQueries({ queryKey: ["klasemen"] })
+    },
+    onError: () => {
       toast({ title: "Network Error", status: "error" })
-      console.error(err)
-    } finally {
-      setIsLoading(false)
-    }
+    },
+  })
+
+  const onSubmit = (data: CreateClubForm) => {
+    mutation.mutate({ team: data.team })
   }
 
   return (
@@ -88,7 +90,7 @@ const CreateClub = () => {
                 bg: "blue.500",
               }}
               type="submit"
-              isLoading={isLoading}
+              isLoading={mutation.isPending}
             >
               Create
             </Button>
