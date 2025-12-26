@@ -2,6 +2,7 @@
   "private": true,
   "name": "klasemen-website",
   "version": "1.0.0",
+  "packageManager": "pnpm@8.14.1",
   "scripts": {
     "dev": "pnpm -r --parallel run start",
     "build": "pnpm -r run build",
