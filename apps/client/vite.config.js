@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import path from 'path'
 
 export default defineConfig({
   plugins: [
@@ -9,11 +10,11 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
-        name: 'Klasemen Website',
-        short_name: 'Klasemen',
+        name: 'Foot Lab',
+        short_name: 'FootLab',
         description: 'Football League Standings App',
-        theme_color: '#3182ce',
-        background_color: '#ffffff',
+        theme_color: '#0d1b2a',
+        background_color: '#0d1b2a',
         display: 'standalone',
         icons: [
           {
@@ -30,6 +31,11 @@ export default defineConfig({
       }
     })
   ],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
   server: {
     port: 3000,
     open: true

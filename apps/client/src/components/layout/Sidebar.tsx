@@ -1,103 +1,108 @@
 import { useState } from "react"
+import { Link, useLocation } from "react-router-dom"
+import { useTheme } from "next-themes"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 import {
-  Flex,
-  Text,
-  IconButton,
-  Divider,
-  Avatar,
-  Heading,
-  useColorMode,
-  useColorModeValue,
-} from "@chakra-ui/react"
-import { FiMenu, FiHome, FiLayout, FiPlus, FiMoon, FiSun } from "react-icons/fi"
-import NavItem from "../layout/NavItem"
-import { Link } from "react-router-dom"
+  Home,
+  PlusCircle,
+  Trophy,
+  BarChart3,
+  Menu,
+  Moon,
+  Sun,
+  ChevronLeft,
+} from "lucide-react"
+
+const navItems = [
+  { path: "/", icon: Home, label: "Dashboard" },
+  { path: "/create-club", icon: PlusCircle, label: "Create Club" },
+  { path: "/input-match", icon: BarChart3, label: "Input Match" },
+  { path: "/view-klasemen", icon: Trophy, label: "View Klasemen" },
+  { path: "/real-klasemen", icon: Trophy, label: "Live Standings" },
+]
 
 export default function Sidebar() {
-  const [navSize, changeNavSize] = useState("large")
-  const { colorMode, toggleColorMode } = useColorMode()
-  const bgColor = useColorModeValue("white", "gray.800")
+  const [collapsed, setCollapsed] = useState(false)
+  const { theme, setTheme } = useTheme()
+  const location = useLocation()
 
   return (
-    <Flex
-      pos="sticky"
-      left="5"
-      h="95vh"
-      marginTop="2.5vh"
-      boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.05)"
-      borderRadius={navSize == "small" ? "15px" : "30px"}
-      w={navSize == "small" ? "75px" : "200px"}
-      flexDir="column"
-      justifyContent="space-between"
-      bg={bgColor}
+    <aside
+      className={cn(
+        "sticky top-0 h-screen border-r bg-card transition-all duration-300",
+        collapsed ? "w-16" : "w-64"
+      )}
     >
-      <Flex
-        p="5%"
-        flexDir="column"
-        w="100%"
-        alignItems={navSize == "small" ? "center" : "flex-start"}
-        as="nav"
-      >
-        <Flex justify="space-between" w="100%" align="center">
-          <IconButton
-            aria-label="Toggle menu"
-            background="none"
-            mt={5}
-            _hover={{ background: "none" }}
-            icon={<FiMenu />}
-            onClick={() => {
-              if (navSize == "small") changeNavSize("large")
-              else changeNavSize("small")
-            }}
-          />
-          <IconButton
-            aria-label="Toggle dark mode"
-            background="none"
-            mt={5}
-            _hover={{ background: "none" }}
-            icon={colorMode === "light" ? <FiMoon /> : <FiSun />}
-            onClick={toggleColorMode}
-          />
-        </Flex>
-        <Link to="/">
-          <NavItem navSize={navSize} icon={FiHome} title="Dashboard" description="Home page" active={false} />
-        </Link>
-        <Link to="/create-club">
-          <NavItem navSize={navSize} icon={FiHome} title="Create Club" description="Add new club" active={false} />
-        </Link>
-        <Link to="/input-match">
-          <NavItem navSize={navSize} icon={FiPlus} title="Input Match" description="Record match" active={false} />
-        </Link>
-        <Link to="/view-klasemen">
-          <NavItem navSize={navSize} icon={FiLayout} title="View Klasemen" description="Custom league" active={false} />
-        </Link>
-        <Link to="/real-klasemen">
-          <NavItem navSize={navSize} icon={FiLayout} title="Live Standings" description="Premier League" active={false} />
-        </Link>
-      </Flex>
-
-      <Flex
-        p="5%"
-        flexDir="column"
-        w="100%"
-        alignItems={navSize == "small" ? "center" : "flex-start"}
-        mb={4}
-      >
-        <Divider display={navSize == "small" ? "none" : "flex"} />
-        <Flex mt={4} align="center">
-          <Avatar size="sm" src="avatar-1.jpg" />
-          <Flex
-            flexDir="column"
-            ml={4}
-            display={navSize == "small" ? "none" : "flex"}
+      <div className="flex h-full flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b">
+          {!collapsed && (
+            <h1 className="text-xl font-bold text-primary animate-fade-in">
+              ⚽ Foot Lab
+            </h1>
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setCollapsed(!collapsed)}
           >
-            <Heading as="h3" size="sm">
-              Nur Adli Fathan
-            </Heading>
-            <Text color="gray">Admin</Text>
-          </Flex>
-        </Flex>
-      </Flex>
-    </Flex>
+            {collapsed ? <Menu className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+          </Button>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 p-2 space-y-1">
+          {navItems.map((item) => {
+            const isActive = location.pathname === item.path
+            return (
+              <Link key={item.path} to={item.path}>
+                <div
+                  className={cn(
+                    "flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:bg-accent",
+                    isActive && "bg-primary text-primary-foreground hover:bg-primary/90",
+                    collapsed && "justify-center"
+                  )}
+                >
+                  <item.icon className="h-5 w-5 shrink-0" />
+                  {!collapsed && (
+                    <span className="animate-fade-in">{item.label}</span>
+                  )}
+                </div>
+              </Link>
+            )
+          })}
+        </nav>
+
+        {/* Footer */}
+        <div className="p-4 border-t space-y-2">
+          <Button
+            variant="ghost"
+            size={collapsed ? "icon" : "default"}
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="w-full"
+          >
+            {theme === "dark" ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
+            {!collapsed && <span className="ml-2">Toggle Theme</span>}
+          </Button>
+          
+          {!collapsed && (
+            <div className="flex items-center gap-3 p-2 rounded-lg bg-muted animate-fade-in">
+              <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
+                RGS
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">RGS</p>
+                <p className="text-xs text-muted-foreground">Admin</p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </aside>
   )
 }
