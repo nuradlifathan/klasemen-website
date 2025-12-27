@@ -1,19 +1,22 @@
+/// <reference types="node" />
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import { PrismaClient } from '@prisma/client'
 
+// Dynamic import for Prisma to avoid TS errors at build time
+const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
+
 const app = new Hono().basePath('/api')
 
 app.use('*', cors())
 
 // Health check
-app.get('/health', (c) => c.json({ status: 'ok' }))
+app.get('/health', (c: any) => c.json({ status: 'ok' }))
 
 // ==================== KLUB ROUTES ====================
 
-app.post('/klub/create', async (c) => {
+app.post('/klub/create', async (c: any) => {
   try {
     const { team } = await c.req.json()
     const club = await prisma.club.create({
@@ -26,7 +29,7 @@ app.post('/klub/create', async (c) => {
   }
 })
 
-app.get('/klub', async (c) => {
+app.get('/klub', async (c: any) => {
   try {
     const clubs = await prisma.club.findMany({ select: { id: true, team: true } })
     return c.json(clubs)
@@ -35,12 +38,12 @@ app.get('/klub', async (c) => {
   }
 })
 
-app.get('/klub/klasemen', async (c) => {
+app.get('/klub/klasemen', async (c: any) => {
   try {
     const klasemen = await prisma.club.findMany({
       orderBy: [{ point: 'desc' }, { goal_masuk: 'desc' }, { team: 'asc' }],
     })
-    return c.json(klasemen.map((club, index) => ({
+    return c.json(klasemen.map((club: any, index: number) => ({
       no: index + 1, klub: club.team, main: club.main, menang: club.menang,
       seri: club.seri, kalah: club.kalah, goal_masuk: club.goal_masuk,
       goal_kemasukan: club.goal_kemasukan, point: club.point,
@@ -50,7 +53,7 @@ app.get('/klub/klasemen', async (c) => {
   }
 })
 
-app.post('/klub/input-score', async (c) => {
+app.post('/klub/input-score', async (c: any) => {
   try {
     const { ClubId, opponent_name, score } = await c.req.json()
     const club = await prisma.club.findUnique({ where: { id: ClubId } })
@@ -93,7 +96,7 @@ app.post('/klub/input-score', async (c) => {
 
 // ==================== FOOTBALL API ====================
 
-app.get('/football/standings/:competition', async (c) => {
+app.get('/football/standings/:competition', async (c: any) => {
   try {
     const competition = c.req.param('competition')
     const apiKey = process.env.FOOTBALL_API_KEY
