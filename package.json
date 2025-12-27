@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "pnpm -r --parallel run start",
     "build": "pnpm -r run build",
+    "postinstall": "cd api && npx prisma generate",
     "vercel-build": "cd apps/client && npm run build",
     "clean": "rm -rf node_modules apps/*/node_modules api/node_modules",
     "dev:client": "pnpm --filter client run start",
