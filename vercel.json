@@ -4,9 +4,7 @@
     {
       "src": "apps/client/package.json",
       "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build"
-      }
+      "config": { "distDir": "build" }
     },
     {
       "src": "api/**/*.ts",
@@ -16,5 +14,9 @@
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "/(.*)", "dest": "/apps/client/build/$1" }
-  ]
+  ],
+  "env": {
+    "DATABASE_URL": "@database_url",
+    "FOOTBALL_API_KEY": "@football_api_key"
+  }
 }
