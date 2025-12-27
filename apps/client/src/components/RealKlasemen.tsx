@@ -48,7 +48,7 @@ const RealKlasemen = () => {
   const { data, isLoading, error } = useQuery<StandingsResponse>({
     queryKey: ["realStandings", "PL"],
     queryFn: async () => {
-      const res = await API.get("/api/football/standings/PL")
+      const res = await API.get("/football/standings/PL")
       return res.data
     },
   })
