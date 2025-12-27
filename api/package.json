@@ -2,14 +2,15 @@
   "name": "klasemen-website-api",
   "version": "1.0.0",
   "scripts": {
-    "vercel-build": "prisma generate --schema=../apps/server/prisma/schema.prisma"
+    "vercel-build": "prisma generate"
   },
   "dependencies": {
-    "hono": "^4.0.0",
-    "@prisma/client": "^5.22.0"
+    "@prisma/client": "^5.22.0",
+    "@vercel/node": "^3.0.0"
   },
   "devDependencies": {
     "prisma": "^5.22.0",
-    "@types/node": "^20.0.0"
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
   }
 }
