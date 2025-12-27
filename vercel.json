@@ -2,10 +2,9 @@
   "version": 2,
   "buildCommand": "npm run vercel-build",
   "outputDirectory": "apps/client/build",
-  "installCommand": "npm install && cd apps/client && npm install && cd ../server && npm install",
+  "installCommand": "npm install --legacy-peer-deps",
   "functions": {
     "api/*.ts": {
-      "memory": 1024,
       "maxDuration": 10
     }
   },
