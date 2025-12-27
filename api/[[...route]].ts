@@ -111,16 +111,27 @@ app.get('/football/standings/:competition', async (c) => {
 })
 
 // Vercel handler
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  return app.fetch(
-    new Request(`https://localhost${req.url}`, {
-      method: req.method,
-      headers: req.headers as HeadersInit,
-      body: req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined,
-    })
-  ).then(async (response) => {
-    res.status(response.status)
-    response.headers.forEach((value, key) => res.setHeader(key, value))
-    res.send(await response.text())
+export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
+  const url = `https://localhost${req.url}`
+  const headers: Record<string, string> = {}
+  
+  for (const [key, value] of Object.entries(req.headers)) {
+    if (typeof value === 'string') {
+      headers[key] = value
+    }
+  }
+
+  const request = new Request(url, {
+    method: req.method,
+    headers,
+    body: req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined,
   })
+
+  const response = await app.fetch(request)
+  
+  res.status(response.status)
+  response.headers.forEach((value: string, key: string) => {
+    res.setHeader(key, value)
+  })
+  res.send(await response.text())
 }
