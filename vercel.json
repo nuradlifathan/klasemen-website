@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "buildCommand": "npm run vercel-build",
+  "buildCommand": "cd apps/client && pnpm build",
   "outputDirectory": "apps/client/build",
-  "installCommand": "npm install --legacy-peer-deps --ignore-scripts && cd apps/client && npm install --legacy-peer-deps --ignore-scripts",
+  "installCommand": "pnpm install",
   "functions": {
     "api/*.ts": {
       "maxDuration": 10
