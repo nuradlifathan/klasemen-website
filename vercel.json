@@ -1,0 +1,14 @@
+{
+  "buildCommand": "cd apps/server && npx prisma generate && cd ../client && npm run build",
+  "outputDirectory": "apps/client/build",
+  "installCommand": "npm install",
+  "framework": "vite",
+  "functions": {
+    "apps/server/api/**/*.ts": {
+      "runtime": "@vercel/node@3.0.0"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/apps/server/api/:path*" }
+  ]
+}

@@ -1,9 +1,10 @@
 import axios from "axios"
 
-// Use environment variable for API URL, fallback to localhost for dev
-const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000",
-})
+// In production, use relative path (same domain)
+// In development, use localhost
+const baseURL = import.meta.env.PROD ? "/api" : "http://localhost:8000/api"
+
+const API = axios.create({ baseURL })
 
 // Typed API functions for TanStack Query
 export const api = {
