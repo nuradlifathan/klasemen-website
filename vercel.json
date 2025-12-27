@@ -7,16 +7,12 @@
       "config": { "distDir": "build" }
     },
     {
-      "src": "api/**/*.ts",
+      "src": "api/*.ts",
       "use": "@vercel/node"
     }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/api/(.*)", "dest": "/api/[[...route]].ts" },
     { "src": "/(.*)", "dest": "/apps/client/build/$1" }
-  ],
-  "env": {
-    "DATABASE_URL": "@database_url",
-    "FOOTBALL_API_KEY": "@football_api_key"
-  }
+  ]
 }
