@@ -60,19 +60,19 @@ export default function Sidebar() {
           />
         </Flex>
         <Link to="/">
-          <NavItem navSize={navSize} icon={FiHome} title="Dashboard" />
+          <NavItem navSize={navSize} icon={FiHome} title="Dashboard" description="Home page" active={false} />
         </Link>
         <Link to="/create-club">
-          <NavItem navSize={navSize} icon={FiHome} title="Create Club" />
+          <NavItem navSize={navSize} icon={FiHome} title="Create Club" description="Add new club" active={false} />
         </Link>
         <Link to="/input-match">
-          <NavItem navSize={navSize} icon={FiPlus} title="Input Match" />
+          <NavItem navSize={navSize} icon={FiPlus} title="Input Match" description="Record match" active={false} />
         </Link>
         <Link to="/view-klasemen">
-          <NavItem navSize={navSize} icon={FiLayout} title="View Klasemen" />
+          <NavItem navSize={navSize} icon={FiLayout} title="View Klasemen" description="Custom league" active={false} />
         </Link>
         <Link to="/real-klasemen">
-          <NavItem navSize={navSize} icon={FiLayout} title="Live Standings" />
+          <NavItem navSize={navSize} icon={FiLayout} title="Live Standings" description="Premier League" active={false} />
         </Link>
       </Flex>
 
